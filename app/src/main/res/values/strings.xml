@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">ListaDC</string>
+    <string name="criar">Criar</string>
+    <string name="produto">produto</string>
+    <string name="nova_pasta">nova pasta</string>
+    <string name="novo_item">novo item</string>
+
+    <string name="success">deu certo</string>
+    <string name="fuck">deu ruim</string>
+
+    <string name="action_settings">action</string>
+</resources>
