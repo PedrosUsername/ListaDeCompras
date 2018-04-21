@@ -35,16 +35,22 @@
             app:layout_constraintVertical_bias="0.0"
             android:id="@+id/textView" />
 
-        <RelativeLayout
+        <LinearLayout
             android:background="@color/customDarkGreen"
-
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_alignLeft="@+id/textView"
             android:layout_alignRight="@+id/textView"
             android:layout_below="@+id/textView">
 
-        </RelativeLayout>
+            <ListView
+                android:id="@+id/products"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </ListView>
+        </LinearLayout>
 
     </RelativeLayout>
 
