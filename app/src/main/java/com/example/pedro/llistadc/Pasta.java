@@ -14,4 +14,10 @@ class Pasta extends Produto{
         this.title = s;
     }
 
+    public String getTitle(){ return this.title; }
+
+    public void addItem(Item i){
+        this.another_list.add(i);
+    }
+
 }

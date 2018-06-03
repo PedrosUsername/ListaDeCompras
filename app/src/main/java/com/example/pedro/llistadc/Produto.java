@@ -14,4 +14,10 @@ public class Produto{
         public String toString(){
                 return this.title;
         }
+
+        public void setTitle(String s){
+                this.title = s;
+        }
+
+        public String getTitle(){ return this.title; }
 }

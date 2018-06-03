@@ -14,8 +14,6 @@ public class Item extends Produto{
         this.title = s;
     }
 
-    public void addItem(Item i){
-        this.another_list.add(i);
-    }
+    public String getTitle(){ return this.title; }
 
 }

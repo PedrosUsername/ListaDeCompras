@@ -1,5 +1,6 @@
 package com.example.pedro.llistadc;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.view.ActionMode;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import java.util.List;
@@ -21,30 +23,73 @@ import java.util.List;
 
 public class MyActionModeCallback implements ActionMode.Callback {
     private Context context;
-    private List lista_de_produtos;
+    private DatabaseHelper databaseHelper;
+    private List<Produto> lista_de_produtos;
     private int i;
 
     public MyActionModeCallback(Context context, List lista_de_produtos, int i) {
         this.context = context;
+        databaseHelper = new DatabaseHelper(context);
         this.lista_de_produtos = lista_de_produtos;
         this.i = i;
     }
 
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-        // TODO Auto-generated method stub
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+
+        LayoutInflater inflater = LayoutInflater.from(context);
 
         switch (item.getItemId()){
 
             case R.id.item_delete:
+                databaseHelper.deleteDataFromDB(lista_de_produtos.get(i).getTitle());
                 lista_de_produtos.remove(i);
+
                 mode.finish();
             break;
 
 
             case R.id.item_edit:
-                
+
+                AlertDialog.Builder mBuilder = new AlertDialog.Builder(context);
+                View mView = inflater.inflate(R.layout.dialog_input_edit, null);
+                final EditText mProduto = mView.findViewById(R.id.produto_input);
+                final String oldValue = lista_de_produtos.get(i).toString();
+                mProduto.setText(oldValue);
+
+                final Button mCancelar = mView.findViewById(R.id.cancelar);
+                final Button mConcluir = mView.findViewById(R.id.concluir);
+
+                mBuilder.setView(mView);
+                final AlertDialog dialog = mBuilder.create();
+
+                mCancelar.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+
+                        dialog.dismiss();
+                    }
+                });
+
+
+                mConcluir.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View view) {
+                        lista_de_produtos.get(i).setTitle(mProduto.getText().toString());
+                        databaseHelper.editDataFromDB(oldValue, mProduto.getText().toString());
+
+                        dialog.dismiss();
+                    }
+                });
+
+
+
+
+                dialog.show();
+
+
                 mode.finish();
             break;
 

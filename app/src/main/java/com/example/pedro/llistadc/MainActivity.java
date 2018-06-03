@@ -14,18 +14,23 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    List<Produto> lista_de_produtos = new Vector<Produto>();
+    DatabaseHelper databaseHelper;
+    List<Produto> lista_de_produtos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        databaseHelper = new DatabaseHelper(getApplicationContext());
+        lista_de_produtos = databaseHelper.getAllProdutosFromDB();
 
         final FloatingActionButton fab = findViewById(R.id.fab);
         ListView products = findViewById(R.id.products);
@@ -38,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ActionMode mActionMode;
-                MyActionModeCallback callback = new MyActionModeCallback(getApplicationContext(), lista_de_produtos, i);
+                MyActionModeCallback callback = new MyActionModeCallback(MainActivity.this, lista_de_produtos, i);
                 mActionMode = startActionMode(callback);
                 mActionMode.setTitle(R.string.menu_context_title);
 
@@ -66,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             Item novoItem = new Item(mProduto.getText().toString());
                             lista_de_produtos.add(novoItem);
+                            databaseHelper.addDataToDB(mProduto.getText().toString());
+
                             dialog.dismiss();
                         }
                     });
@@ -88,5 +95,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
 
 }
