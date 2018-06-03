@@ -35,8 +35,7 @@ public class MainActivity extends AppCompatActivity {
         final FloatingActionButton fab = findViewById(R.id.fab);
         ListView products = findViewById(R.id.products);
 
-        ArrayAdapter<Produto> adapter = new ArrayAdapter<Produto>(this, android.R.layout.simple_list_item_1, lista_de_produtos);
-
+        ArrayAdapter<Produto> adapter = new ArrayAdapter<Produto>(this, R.layout.list_view_white_text, R.id.list_content, lista_de_produtos);
         products.setAdapter(adapter);
 
         products.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
