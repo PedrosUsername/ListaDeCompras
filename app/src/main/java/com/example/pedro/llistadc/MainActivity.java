@@ -23,7 +23,7 @@ import java.util.Vector;
 public class MainActivity extends AppCompatActivity {
 
     DatabaseHelper databaseHelper;
-    List<Produto> lista_de_produtos;
+    ArrayList<Produto> lista_de_produtos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

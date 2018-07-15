@@ -60,8 +60,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         onCreate(sqLiteDatabase);
     }
 
-    public List<Produto> getAllProdutosFromDB(){
-        List<Produto> list = new ArrayList<>();
+    public ArrayList<Produto> getAllProdutosFromDB(){
+        ArrayList<Produto> list = new ArrayList<>();
         String selectQuery = "SELECT * FROM " + TABLE_NAME;
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
