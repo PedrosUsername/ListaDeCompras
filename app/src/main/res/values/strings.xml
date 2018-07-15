@@ -10,4 +10,5 @@
     <string name="menu_context_title"> </string>
 
     <string name="action_settings">action</string>
+    <string name="title_activity_show_pasta_contents">ShowPastaContents</string>
 </resources>

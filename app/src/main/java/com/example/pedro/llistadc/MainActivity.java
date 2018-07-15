@@ -1,6 +1,7 @@
 package com.example.pedro.llistadc;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,16 @@ public class MainActivity extends AppCompatActivity {
         ArrayAdapter<Produto> adapter = new ArrayAdapter<Produto>(this, R.layout.list_view_white_text, R.id.list_content, lista_de_produtos);
         products.setAdapter(adapter);
 
+        products.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                Intent intent = new Intent(MainActivity.this, ShowPastaContents.class);
+                startActivity(intent);
+
+            }
+        });
+
         products.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -46,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
                 mActionMode = startActionMode(callback);
                 mActionMode.setTitle(R.string.menu_context_title);
 
-                return false;
+                return true;
             }
         });
 
