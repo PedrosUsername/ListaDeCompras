@@ -22,6 +22,7 @@ import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity {
 
+    String RELACAO = "LListaDC";
     DatabaseHelper databaseHelper;
     ArrayList<Produto> lista_de_produtos;
 
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         databaseHelper = new DatabaseHelper(getApplicationContext());
-        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( "LListaDC" );
+        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( RELACAO );
 
         final FloatingActionButton fab = findViewById(R.id.fab);
         ListView products = findViewById(R.id.products);
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ActionMode mActionMode;
-                MyActionModeCallback callback = new MyActionModeCallback(MainActivity.this, lista_de_produtos, i);
+                MyActionModeCallback callback = new MyActionModeCallback(MainActivity.this, lista_de_produtos, i, RELACAO);
                 mActionMode = startActionMode(callback);
                 mActionMode.setTitle(R.string.menu_context_title);
 

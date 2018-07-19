@@ -26,12 +26,14 @@ public class MyActionModeCallback implements ActionMode.Callback {
     private DatabaseHelper databaseHelper;
     private List<Produto> lista_de_produtos;
     private int i;
+    private String relacao;
 
-    public MyActionModeCallback(Context context, List lista_de_produtos, int i) {
+    public MyActionModeCallback(Context context, List lista_de_produtos, int i, String relacao) {
         this.context = context;
         databaseHelper = new DatabaseHelper(context);
         this.lista_de_produtos = lista_de_produtos;
         this.i = i;
+        this.relacao = relacao;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class MyActionModeCallback implements ActionMode.Callback {
         switch (item.getItemId()){
 
             case R.id.item_delete:
-                databaseHelper.deleteDataFromDB(lista_de_produtos.get(i).getTitle());
+                databaseHelper.deleteDataFromDB(lista_de_produtos.get(i).getTitle(), relacao);
                 lista_de_produtos.remove(i);
 
                 mode.finish();
@@ -78,7 +80,7 @@ public class MyActionModeCallback implements ActionMode.Callback {
                     @Override
                     public void onClick(View view) {
                         lista_de_produtos.get(i).setTitle(mProduto.getText().toString());
-                        databaseHelper.editDataFromDB(oldValue, mProduto.getText().toString());
+                        databaseHelper.editDataFromDB(oldValue, mProduto.getText().toString(), relacao);
 
                         dialog.dismiss();
                     }

@@ -37,7 +37,7 @@ public class ShowPastaContents extends AppCompatActivity {
         Bundle b = i.getExtras();
         Produto p = (Produto) b.getSerializable("serial_obj");
         lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( p.getTitle() );
-        final String NOMEPASTA = p.getTitle();
+        final String RELACAO = p.getTitle();
 
 
         FloatingActionButton fab = findViewById(R.id.fab_pasta);
@@ -70,7 +70,7 @@ public class ShowPastaContents extends AppCompatActivity {
                     public void onClick(View view) {
                         Item novoItem = new Item(mProduto.getText().toString());
                         lista_de_produtos.add(novoItem);
-                        databaseHelper.addDataToDB(mProduto.getText().toString(), 0, NOMEPASTA);
+                        databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO);
 
                         dialog.dismiss();
                     }
@@ -83,7 +83,7 @@ public class ShowPastaContents extends AppCompatActivity {
                     public void onClick(View view) {
                         Pasta novaPasta = new Pasta(mProduto.getText().toString());
                         lista_de_produtos.add(novaPasta);
-                        databaseHelper.addDataToDB(mProduto.getText().toString(), 1, NOMEPASTA);
+                        databaseHelper.addDataToDB(mProduto.getText().toString(), 1, RELACAO);
                         dialog.dismiss();
                     }
                 });
