@@ -88,16 +88,19 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             Item novoItem = new Item(mProduto.getText().toString());
 
-                            if( !mProduto.getText().toString().isEmpty() ) {
-                                Log.d("hhyhihiujkjnkjhjhbjh", "nao null ");
+                            if(( !mProduto.getText().toString().isEmpty() ) && ( !lista_de_produtos_tem(novoItem) )) {
                                 lista_de_produtos.add(novoItem);
                                 databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO);
-                            }else{
-                                Log.d("hhyhihiujkjnkjhjhbjh", "sim null ");
+                            }else {
                                 int duration = Toast.LENGTH_SHORT;
 
-                                Toast toast = Toast.makeText(getApplicationContext(), "produto inválido: sem nome", duration);
-                                toast.show();
+                                if ( !lista_de_produtos_tem(novoItem) ) {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Produto sem nome", duration);
+                                    toast.show();
+                                }else {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Esse produto ja foi adicionado", duration);
+                                    toast.show();
+                                }
                             }
 
                             dialog.dismiss();
@@ -111,14 +114,19 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             Pasta novaPasta = new Pasta(mProduto.getText().toString());
 
-                            if( !mProduto.getText().toString().isEmpty() ) {
+                            if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novaPasta) )) {
                                 lista_de_produtos.add(novaPasta);
                                 databaseHelper.addDataToDB(mProduto.getText().toString(), 1, "LListaDC");
                             }else{
                                 int duration = Toast.LENGTH_SHORT;
 
-                                Toast toast = Toast.makeText(getApplicationContext(), "produto inválido: sem nome", duration);
-                                toast.show();
+                                if ( !lista_de_produtos_tem(novaPasta) ) {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Produto sem nome", duration);
+                                    toast.show();
+                                }else {
+                                    Toast toast = Toast.makeText(getApplicationContext(), "Esse produto ja foi adicionado", duration);
+                                    toast.show();
+                                }
                             }
 
                             dialog.dismiss();
@@ -133,5 +141,15 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public boolean lista_de_produtos_tem( Produto p ){
+        int i;
 
+        for(i=0; i<lista_de_produtos.size(); i++){
+            if(lista_de_produtos.get(i).getTitle().equals( p.getTitle() ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
