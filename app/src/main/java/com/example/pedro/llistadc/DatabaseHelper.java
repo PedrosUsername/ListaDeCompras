@@ -114,5 +114,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     public void deleteDataFromDB(String s){
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_NAME, COL2 + " = '" + s + "'", null);
+        db.delete(TABLE_NAME, COL4 + " = '" + s + "'", null);
     }
 }
