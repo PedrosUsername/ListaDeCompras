@@ -21,13 +21,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COL1 = "ID";
     private static final String COL2 = "titulo";
     private static final String COL3 = "tipo";
+    private static final String COL4 = "relacao";
     //*****************
 
-    //ProdutosProdutos
-    private static final String TABLE2_NAME = "produtosprodutos";
-    private static final String COL = "ID";
-    private static final String COLL = "relate";
-    //****************
 
     private static final String DATABASE_NAME = "llistas.db";
     static final int DATABASE_VERSION = 1;
@@ -47,24 +43,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT, " + COL3 + " INTEGER)";
-        String createTable2 = "CREATE TABLE " + TABLE2_NAME + " (" + COL + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLL + " TEXT)";
+        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT, " + COL3 + " INTEGER, " + COL4 + " TEXT)";
 
         sqLiteDatabase.execSQL(createTable);
-        sqLiteDatabase.execSQL(createTable2);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE2_NAME);
 
         onCreate(sqLiteDatabase);
     }
 
-    public ArrayList<Produto> getAllProdutosFromDB(){
+    public ArrayList<Produto> getAllProdutosFromDBRelatedTo( String relacao ){
         ArrayList<Produto> list = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME;
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL4 + " = '" + relacao + "'";
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         Cursor c = sqLiteDatabase.rawQuery(selectQuery, null);
@@ -91,34 +84,14 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return list;
     }
 
-    public ArrayList<Produto> getAllProdutosFromPastaFromDB(String nomePasta){
-        Log.d("nomePasta: ", nomePasta);
-
-        ArrayList<Produto> list = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE2_NAME + " WHERE " + COL + " = '" + nomePasta + "'";
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-
-        Cursor c = sqLiteDatabase.rawQuery(selectQuery, null);
-
-        if(c.moveToFirst()){
-            do {
-                Produto p = new Produto();
-                p.setTitle(c.getString(c.getColumnIndex(COL2)));
-
-                list.add(p);
-
-            } while (c.moveToNext());
-        }
 
 
-        return list;
-    }
-
-    public boolean addDataToDB(String item, int type){
+    public boolean addDataToDB(String item, int type, String relacao){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, item);
         contentValues.put(COL3, type);
+        contentValues.put(COL4, relacao);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 

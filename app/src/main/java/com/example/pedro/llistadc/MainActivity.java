@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         databaseHelper = new DatabaseHelper(getApplicationContext());
-        lista_de_produtos = databaseHelper.getAllProdutosFromDB();
+        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( "LListaDC" );
 
         final FloatingActionButton fab = findViewById(R.id.fab);
         ListView products = findViewById(R.id.products);
@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             Item novoItem = new Item(mProduto.getText().toString());
                             lista_de_produtos.add(novoItem);
-                            databaseHelper.addDataToDB(mProduto.getText().toString(), 0);
+                            databaseHelper.addDataToDB(mProduto.getText().toString(), 0, "LListaDC");
 
                             dialog.dismiss();
                         }
@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             Pasta novaPasta = new Pasta(mProduto.getText().toString());
                             lista_de_produtos.add(novaPasta);
-                            databaseHelper.addDataToDB(mProduto.getText().toString(), 1);
+                            databaseHelper.addDataToDB(mProduto.getText().toString(), 1, "LListaDC");
 
                             dialog.dismiss();
                         }
