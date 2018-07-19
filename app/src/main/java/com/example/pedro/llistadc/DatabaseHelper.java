@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String TABLE_NAME = "produtos";
     private static final String COL1 = "ID";
     private static final String COL2 = "titulo";
+    private static final String COL3 = "tipo";
     //*****************
 
     //ProdutosProdutos
@@ -45,7 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT)";
+        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT, " + COL3 + " INTEGER)";
         String createTable2 = "CREATE TABLE " + TABLE2_NAME + " (" + COL + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLL + " TEXT)";
 
         sqLiteDatabase.execSQL(createTable);
@@ -69,6 +71,37 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         if(c.moveToFirst()){
             do {
+                if( c.getInt( c.getColumnIndex(COL3)) == 0 ){
+                    Item p = new Item( c.getString(c.getColumnIndex(COL2)) );
+                    p.type = 0;
+
+                    list.add(p);
+                }
+                else {
+                    Pasta p = new Pasta( c.getString(c.getColumnIndex(COL2)) );
+                    p.type = 1;
+
+                    list.add(p);
+                }
+
+            } while (c.moveToNext());
+        }
+
+
+        return list;
+    }
+
+    public ArrayList<Produto> getAllProdutosFromPastaFromDB(String nomePasta){
+        Log.d("nomePasta: ", nomePasta);
+
+        ArrayList<Produto> list = new ArrayList<>();
+        String selectQuery = "SELECT * FROM " + TABLE2_NAME + " WHERE " + COL + " = '" + nomePasta + "'";
+        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
+
+        Cursor c = sqLiteDatabase.rawQuery(selectQuery, null);
+
+        if(c.moveToFirst()){
+            do {
                 Produto p = new Produto();
                 p.setTitle(c.getString(c.getColumnIndex(COL2)));
 
@@ -81,24 +114,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return list;
     }
 
-    public String getProductFromDB(long productId){
-        SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
-
-        String selectQuery = "SELECT FROM " + TABLE_NAME + " WHERE "
-                + COL1 + " = " + productId ;
-
-        Cursor c = sqLiteDatabase.rawQuery(selectQuery, null);
-
-        if(c != null)
-            c.moveToFirst();
-
-        return c.getString(c.getColumnIndex(COL2));
-    }
-
-    public boolean addDataToDB(String item){
+    public boolean addDataToDB(String item, int type){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, item);
+        contentValues.put(COL3, type);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 

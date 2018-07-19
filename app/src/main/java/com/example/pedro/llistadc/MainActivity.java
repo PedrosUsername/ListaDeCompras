@@ -43,8 +43,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-                Intent intent = new Intent(MainActivity.this, ShowPastaContents.class);
-                startActivity(intent);
+                if(lista_de_produtos.get(i).type == 1) {
+                    Intent intent = new Intent(MainActivity.this, ShowPastaContents.class);
+                    intent.putExtra("serial_obj", lista_de_produtos.get(i));
+                    startActivity(intent);
+                }
 
             }
         });
@@ -81,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             Item novoItem = new Item(mProduto.getText().toString());
                             lista_de_produtos.add(novoItem);
-                            databaseHelper.addDataToDB(mProduto.getText().toString());
+                            databaseHelper.addDataToDB(mProduto.getText().toString(), 0);
 
                             dialog.dismiss();
                         }
@@ -94,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             Pasta novaPasta = new Pasta(mProduto.getText().toString());
                             lista_de_produtos.add(novaPasta);
+                            databaseHelper.addDataToDB(mProduto.getText().toString(), 1);
+
                             dialog.dismiss();
                         }
                     });

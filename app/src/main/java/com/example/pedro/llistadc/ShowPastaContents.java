@@ -1,12 +1,14 @@
 package com.example.pedro.llistadc;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -29,15 +31,20 @@ public class ShowPastaContents extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_pasta_contents);
 
+
         databaseHelper = new DatabaseHelper(getApplicationContext());
-        lista_de_produtos =  databaseHelper.getAllProdutosFromDB();
+        Intent i = getIntent();
+        Bundle b = i.getExtras();
+        Produto p = (Produto) b.getSerializable("serial_obj");
+        lista_de_produtos = p.getLista();
+        String NOMEPASTA = p.getTitle();
+
 
         FloatingActionButton fab = findViewById(R.id.fab_pasta);
         ListView products = findViewById(R.id.products_pasta);
 
         ArrayAdapter<Produto> adapter = new ArrayAdapter<Produto>(this, R.layout.list_view_white_text, R.id.list_content, lista_de_produtos);
-        products.setAdapter(adapter);
-
+        //products.setAdapter(adapter);
 
 
 
@@ -63,7 +70,7 @@ public class ShowPastaContents extends AppCompatActivity {
                     public void onClick(View view) {
                         Item novoItem = new Item(mProduto.getText().toString());
                         lista_de_produtos.add(novoItem);
-                        databaseHelper.addDataToDB(mProduto.getText().toString());
+                        databaseHelper.addDataToDB(mProduto.getText().toString(), 0);
 
                         dialog.dismiss();
                     }
@@ -76,6 +83,7 @@ public class ShowPastaContents extends AppCompatActivity {
                     public void onClick(View view) {
                         Pasta novaPasta = new Pasta(mProduto.getText().toString());
                         lista_de_produtos.add(novaPasta);
+                        databaseHelper.addDataToDB(mProduto.getText().toString(), 1);
                         dialog.dismiss();
                     }
                 });

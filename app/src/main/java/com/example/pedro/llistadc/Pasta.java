@@ -8,6 +8,7 @@ class Pasta extends Produto{
 
     public Pasta(String s){
         this.title = s;
+        this.type = 1;
     }
 
     public void setTitle(String s){

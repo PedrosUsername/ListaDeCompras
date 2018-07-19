@@ -8,6 +8,7 @@ public class Item extends Produto{
 
     public Item(String s){
         this.title = s;
+        this.type = 0;
     }
 
     public void setTitle(String s){
