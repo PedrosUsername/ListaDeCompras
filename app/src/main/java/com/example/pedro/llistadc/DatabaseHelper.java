@@ -107,8 +107,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         ContentValues values = new ContentValues();
         values.put(COL2, newValue);
+        ContentValues valuesRelated = new ContentValues();
+        valuesRelated.put(COL4, newValue);
 
         db.update(TABLE_NAME, values, COL2 + " = '" + oldValue + "'" , null);
+        db.update(TABLE_NAME, valuesRelated, COL4 + " = '" + oldValue + "'" , null);
     }
 
     public void deleteDataFromDB(String s){
