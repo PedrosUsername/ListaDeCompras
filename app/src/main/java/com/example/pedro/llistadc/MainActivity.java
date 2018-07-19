@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view){
                     AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
                     View mView = getLayoutInflater().inflate(R.layout.dialog_input, null);
+
                     final EditText mProduto = mView.findViewById(R.id.produto_input);
 
                     final Button mNovoItem = mView.findViewById(R.id.novo_item);
@@ -84,8 +87,18 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Item novoItem = new Item(mProduto.getText().toString());
-                            lista_de_produtos.add(novoItem);
-                            databaseHelper.addDataToDB(mProduto.getText().toString(), 0, "LListaDC");
+
+                            if( !mProduto.getText().toString().isEmpty() ) {
+                                Log.d("hhyhihiujkjnkjhjhbjh", "nao null ");
+                                lista_de_produtos.add(novoItem);
+                                databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO);
+                            }else{
+                                Log.d("hhyhihiujkjnkjhjhbjh", "sim null ");
+                                int duration = Toast.LENGTH_SHORT;
+
+                                Toast toast = Toast.makeText(getApplicationContext(), "produto inválido: sem nome", duration);
+                                toast.show();
+                            }
 
                             dialog.dismiss();
                         }
@@ -97,8 +110,16 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Pasta novaPasta = new Pasta(mProduto.getText().toString());
-                            lista_de_produtos.add(novaPasta);
-                            databaseHelper.addDataToDB(mProduto.getText().toString(), 1, "LListaDC");
+
+                            if( !mProduto.getText().toString().isEmpty() ) {
+                                lista_de_produtos.add(novaPasta);
+                                databaseHelper.addDataToDB(mProduto.getText().toString(), 1, "LListaDC");
+                            }else{
+                                int duration = Toast.LENGTH_SHORT;
+
+                                Toast toast = Toast.makeText(getApplicationContext(), "produto inválido: sem nome", duration);
+                                toast.show();
+                            }
 
                             dialog.dismiss();
                         }
