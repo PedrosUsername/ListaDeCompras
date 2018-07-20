@@ -44,6 +44,7 @@ public class MyActionModeCallback implements ActionMode.Callback {
         switch (item.getItemId()){
 
             case R.id.item_delete:
+
                 databaseHelper.deleteDataFromDB(lista_de_produtos.get(i).getTitle(), relacao);
                 lista_de_produtos.remove(i);
 

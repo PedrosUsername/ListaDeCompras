@@ -9,7 +9,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +48,33 @@ public class ShowPastaContents extends AppCompatActivity {
         ArrayAdapter<Produto> adapter = new ArrayAdapter<Produto>(this, R.layout.list_view_white_text, R.id.list_content, lista_de_produtos);
         products.setAdapter(adapter);
 
+
+        products.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if(lista_de_produtos.get(i).type == 1) {
+                    Intent intent = new Intent(ShowPastaContents.this, ShowPastaContents.class);
+                    intent.putExtra("serial_obj", lista_de_produtos.get(i));
+                    startActivity(intent);
+                }
+
+            }
+        });
+
+
+
+        products.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ActionMode mActionMode;
+                MyActionModeCallback callback = new MyActionModeCallback(ShowPastaContents.this, lista_de_produtos, i, RELACAO);
+                mActionMode = startActionMode(callback);
+                mActionMode.setTitle(R.string.menu_context_title);
+
+                return true;
+            }
+        });
 
 
 
