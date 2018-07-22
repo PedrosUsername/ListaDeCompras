@@ -3,6 +3,7 @@ package com.example.pedro.llistadc;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -41,9 +42,28 @@ public class MyActionModeCallback implements ActionMode.Callback {
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
 
             case R.id.item_delete:
+
+                List<Produto> lista_de_produtos_auxiliar;
+                String relacao_auxiliar;
+                while(!databaseHelper.getAllProdutosFromDBRelatedTo(lista_de_produtos.get(i).getTitle()).isEmpty()) {
+                    relacao_auxiliar = this.lista_de_produtos.get(i).getTitle();
+                    lista_de_produtos_auxiliar = databaseHelper.getAllProdutosFromDBRelatedTo(relacao_auxiliar);
+                    int j;
+                    for(j = 0; j < lista_de_produtos_auxiliar.size(); j++) {
+                        while (!databaseHelper.getAllProdutosFromDBRelatedTo(lista_de_produtos_auxiliar.get(j).getTitle()).isEmpty()) {
+                            relacao_auxiliar = lista_de_produtos_auxiliar.get(j).getTitle();
+                            lista_de_produtos_auxiliar = databaseHelper.getAllProdutosFromDBRelatedTo(relacao_auxiliar);
+                            j=0;
+                        }
+
+                        databaseHelper.deleteDataFromDB(lista_de_produtos_auxiliar.get(j).getTitle(), relacao_auxiliar);
+                    }
+
+                }
+
 
                 databaseHelper.deleteDataFromDB(lista_de_produtos.get(i).getTitle(), relacao);
                 lista_de_produtos.remove(i);

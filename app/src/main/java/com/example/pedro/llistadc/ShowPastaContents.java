@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,6 +28,7 @@ public class ShowPastaContents extends AppCompatActivity {
 
     DatabaseHelper databaseHelper;
     ArrayList<Produto> lista_de_produtos;
+    Produto p;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +39,7 @@ public class ShowPastaContents extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(getApplicationContext());
         Intent i = getIntent();
         Bundle b = i.getExtras();
-        Produto p = (Produto) b.getSerializable("serial_obj");
+        p = (Produto) b.getSerializable("serial_obj");
         lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( p.getTitle() );
         final String RELACAO = p.getTitle();
 
@@ -98,8 +100,22 @@ public class ShowPastaContents extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Item novoItem = new Item(mProduto.getText().toString());
+
+                        if(( !mProduto.getText().toString().isEmpty() ) && ( !lista_de_produtos_tem(novoItem) )) {
                         lista_de_produtos.add(novoItem);
+                        p.getLista().add( novoItem );
                         databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO);
+                        }else {
+                            int duration = Toast.LENGTH_SHORT;
+
+                            if ( !lista_de_produtos_tem(novoItem) ) {
+                                Toast toast = Toast.makeText(getApplicationContext(), "Produto sem nome", duration);
+                                toast.show();
+                            }else {
+                                Toast toast = Toast.makeText(getApplicationContext(), "Esse produto ja foi adicionado", duration);
+                                toast.show();
+                            }
+                        }
 
                         dialog.dismiss();
                     }
@@ -111,8 +127,23 @@ public class ShowPastaContents extends AppCompatActivity {
                     @Override
                     public void onClick(View view) {
                         Pasta novaPasta = new Pasta(mProduto.getText().toString());
-                        lista_de_produtos.add(novaPasta);
-                        databaseHelper.addDataToDB(mProduto.getText().toString(), 1, RELACAO);
+
+                        if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novaPasta) )) {
+                            lista_de_produtos.add(novaPasta);
+                            p.getLista().add( novaPasta );
+                            databaseHelper.addDataToDB(mProduto.getText().toString(), 1, RELACAO);
+                        }else{
+                            int duration = Toast.LENGTH_SHORT;
+
+                            if ( !lista_de_produtos_tem(novaPasta) ) {
+                                Toast toast = Toast.makeText(getApplicationContext(), "Produto sem nome", duration);
+                                toast.show();
+                            }else {
+                                Toast toast = Toast.makeText(getApplicationContext(), "Esse produto ja foi adicionado", duration);
+                                toast.show();
+                            }
+                        }
+
                         dialog.dismiss();
                     }
                 });
@@ -125,4 +156,15 @@ public class ShowPastaContents extends AppCompatActivity {
         });
     }
 
+    public boolean lista_de_produtos_tem( Produto p ){
+        int i;
+
+        for(i=0; i<lista_de_produtos.size(); i++){
+            if(lista_de_produtos.get(i).getTitle().equals( p.getTitle() ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

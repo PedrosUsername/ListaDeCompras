@@ -25,4 +25,6 @@ public class Produto implements Serializable{
         public String getTitle(){ return this.title; }
 
         public ArrayList<Produto> getLista(){ return (ArrayList<Produto>) another_list; }
+
+        public void setLista(List<Produto> l) { this.another_list = l; }
 }
