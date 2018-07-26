@@ -28,6 +28,7 @@ public class ShowPastaContents extends AppCompatActivity {
 
     DatabaseHelper databaseHelper;
     ArrayList<Produto> lista_de_produtos;
+    int nivel;
     Produto p;
 
     @Override
@@ -40,7 +41,8 @@ public class ShowPastaContents extends AppCompatActivity {
         Intent i = getIntent();
         Bundle b = i.getExtras();
         p = (Produto) b.getSerializable("serial_obj");
-        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( p.getTitle() );
+        nivel = p.getNivel() + 1;
+        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( p.getTitle(), nivel );
         final String RELACAO = p.getTitle();
 
 
@@ -56,7 +58,9 @@ public class ShowPastaContents extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
                 if(lista_de_produtos.get(i).type == 1) {
+
                     Intent intent = new Intent(ShowPastaContents.this, ShowPastaContents.class);
+                    lista_de_produtos.get(i).setNivel(nivel);
                     intent.putExtra("serial_obj", lista_de_produtos.get(i));
                     startActivity(intent);
                 }
@@ -70,7 +74,7 @@ public class ShowPastaContents extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ActionMode mActionMode;
-                MyActionModeCallback callback = new MyActionModeCallback(ShowPastaContents.this, lista_de_produtos, i, RELACAO);
+                MyActionModeCallback callback = new MyActionModeCallback(ShowPastaContents.this, lista_de_produtos, i, RELACAO, nivel);
                 mActionMode = startActionMode(callback);
                 mActionMode.setTitle(R.string.menu_context_title);
 
@@ -104,7 +108,7 @@ public class ShowPastaContents extends AppCompatActivity {
                         if(( !mProduto.getText().toString().isEmpty() ) && ( !lista_de_produtos_tem(novoItem) )) {
                         lista_de_produtos.add(novoItem);
                         p.getLista().add( novoItem );
-                        databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO);
+                        databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO, nivel);
                         }else {
                             int duration = Toast.LENGTH_SHORT;
 
@@ -131,7 +135,7 @@ public class ShowPastaContents extends AppCompatActivity {
                         if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novaPasta) )) {
                             lista_de_produtos.add(novaPasta);
                             p.getLista().add( novaPasta );
-                            databaseHelper.addDataToDB(mProduto.getText().toString(), 1, RELACAO);
+                            databaseHelper.addDataToDB(mProduto.getText().toString(), 1, RELACAO, nivel);
                         }else{
                             int duration = Toast.LENGTH_SHORT;
 

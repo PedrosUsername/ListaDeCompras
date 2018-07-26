@@ -10,6 +10,7 @@ import java.util.List;
 
 public class Produto implements Serializable{
         int type = 0;
+        int nivel = 0;
         String title = "null";
         List<Produto> another_list;
 
@@ -17,6 +18,10 @@ public class Produto implements Serializable{
         public String toString(){
                 return this.title;
         }
+
+        public int getNivel(){ return this.nivel; }
+
+        public void setNivel(int nivel) { this.nivel = nivel; }
 
         public void setTitle(String s){
                 this.title = s;

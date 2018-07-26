@@ -25,6 +25,7 @@ import java.util.Vector;
 public class MainActivity extends AppCompatActivity {
 
     String RELACAO = "LListaDC";
+    int nivel = 0;
     DatabaseHelper databaseHelper;
     ArrayList<Produto> lista_de_produtos;
 
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         databaseHelper = new DatabaseHelper(getApplicationContext());
-        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( RELACAO );
+        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( RELACAO, nivel );
 
         final FloatingActionButton fab = findViewById(R.id.fab);
         ListView products = findViewById(R.id.products);
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ActionMode mActionMode;
-                MyActionModeCallback callback = new MyActionModeCallback(MainActivity.this, lista_de_produtos, i, RELACAO);
+                MyActionModeCallback callback = new MyActionModeCallback(MainActivity.this, lista_de_produtos, i, RELACAO, nivel);
                 mActionMode = startActionMode(callback);
                 mActionMode.setTitle(R.string.menu_context_title);
 
@@ -87,10 +88,11 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Item novoItem = new Item(mProduto.getText().toString());
+                            novoItem.setNivel(nivel);
 
                             if(( !mProduto.getText().toString().isEmpty() ) && ( !lista_de_produtos_tem(novoItem) )) {
                                 lista_de_produtos.add(novoItem);
-                                databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO);
+                                databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO, nivel);
                             }else {
                                 int duration = Toast.LENGTH_SHORT;
 
@@ -113,10 +115,11 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             Pasta novaPasta = new Pasta(mProduto.getText().toString());
+                            novaPasta.setNivel(nivel);
 
                             if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novaPasta) )) {
                                 lista_de_produtos.add(novaPasta);
-                                databaseHelper.addDataToDB(mProduto.getText().toString(), 1, "LListaDC");
+                                databaseHelper.addDataToDB(mProduto.getText().toString(), 1, RELACAO, nivel);
                             }else{
                                 int duration = Toast.LENGTH_SHORT;
 

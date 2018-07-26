@@ -22,6 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COL2 = "titulo";
     private static final String COL3 = "tipo";
     private static final String COL4 = "relacao";
+    private static final String COL5 = "nivel";
     //*****************
 
 
@@ -43,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT, " + COL3 + " INTEGER, " + COL4 + " TEXT)";
+        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT, " + COL3 + " INTEGER, " + COL4 + " TEXT, " + COL5 + " INTEGER)";
 
         sqLiteDatabase.execSQL(createTable);
     }
@@ -51,13 +52,12 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
-
         onCreate(sqLiteDatabase);
     }
 
-    public ArrayList<Produto> getAllProdutosFromDBRelatedTo( String relacao ){
+    public ArrayList<Produto> getAllProdutosFromDBRelatedTo( String relacao, int nivel ){
         ArrayList<Produto> list = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL4 + " = '" + relacao + "'";
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL4 + " = '" + relacao + "' " + "AND " + COL5 + " = " + nivel;
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         Cursor c = sqLiteDatabase.rawQuery(selectQuery, null);
@@ -86,12 +86,13 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 
 
-    public boolean addDataToDB(String item, int type, String relacao){
+    public boolean addDataToDB(String item, int type, String relacao, int nivel){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL2, item);
         contentValues.put(COL3, type);
         contentValues.put(COL4, relacao);
+        contentValues.put(COL5, nivel);
 
         long result = db.insert(TABLE_NAME, null, contentValues);
 
@@ -114,9 +115,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.update(TABLE_NAME, valuesRelated, COL4 + " = '" + oldValue + "'" , null);
     }
 
-    public void deleteDataFromDB(String s, String relacao){
+    public void deleteDataFromDB(String s, String relacao, int nivel){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, COL2 + " = '" + s + "' AND " + COL4 + " = '"+ relacao +"'", null);
-        db.delete(TABLE_NAME, COL4 + " = '" + s + "'", null);
+        db.delete(TABLE_NAME, COL2 + " = '" + s + "' AND " + COL4 + " = '"+ relacao +"' " + "AND " + COL5 + " = " + nivel, null);
+
     }
 }

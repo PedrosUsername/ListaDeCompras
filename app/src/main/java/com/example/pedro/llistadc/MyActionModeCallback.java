@@ -28,13 +28,15 @@ public class MyActionModeCallback implements ActionMode.Callback {
     private List<Produto> lista_de_produtos;
     private int i;
     private String relacao;
+    private int nivel;
 
-    public MyActionModeCallback(Context context, List lista_de_produtos, int i, String relacao) {
+    public MyActionModeCallback(Context context, List lista_de_produtos, int i, String relacao, int nivel) {
         this.context = context;
         databaseHelper = new DatabaseHelper(context);
         this.lista_de_produtos = lista_de_produtos;
         this.i = i;
         this.relacao = relacao;
+        this.nivel = nivel;
     }
 
     @Override
@@ -48,24 +50,29 @@ public class MyActionModeCallback implements ActionMode.Callback {
 
                 List<Produto> lista_de_produtos_auxiliar;
                 String relacao_auxiliar;
-                while(!databaseHelper.getAllProdutosFromDBRelatedTo(lista_de_produtos.get(i).getTitle()).isEmpty()) {
+                int nivel_auxiliar;
+                while(!databaseHelper.getAllProdutosFromDBRelatedTo(lista_de_produtos.get(i).getTitle(), nivel+1).isEmpty()) {
                     relacao_auxiliar = this.lista_de_produtos.get(i).getTitle();
-                    lista_de_produtos_auxiliar = databaseHelper.getAllProdutosFromDBRelatedTo(relacao_auxiliar);
+                    nivel_auxiliar = this.nivel+1;
+                    lista_de_produtos_auxiliar = databaseHelper.getAllProdutosFromDBRelatedTo(relacao_auxiliar, nivel_auxiliar);
+
                     int j;
                     for(j = 0; j < lista_de_produtos_auxiliar.size(); j++) {
-                        while (!databaseHelper.getAllProdutosFromDBRelatedTo(lista_de_produtos_auxiliar.get(j).getTitle()).isEmpty()) {
+
+                        while (!databaseHelper.getAllProdutosFromDBRelatedTo(lista_de_produtos_auxiliar.get(j).getTitle(), nivel_auxiliar+1).isEmpty()) {
                             relacao_auxiliar = lista_de_produtos_auxiliar.get(j).getTitle();
-                            lista_de_produtos_auxiliar = databaseHelper.getAllProdutosFromDBRelatedTo(relacao_auxiliar);
+                            nivel_auxiliar = nivel_auxiliar + 1;
+                            lista_de_produtos_auxiliar = databaseHelper.getAllProdutosFromDBRelatedTo(relacao_auxiliar, nivel_auxiliar);
                             j=0;
                         }
-
-                        databaseHelper.deleteDataFromDB(lista_de_produtos_auxiliar.get(j).getTitle(), relacao_auxiliar);
+Log.d(lista_de_produtos_auxiliar.get(j).getTitle(), relacao_auxiliar + " " + nivel_auxiliar);
+                        databaseHelper.deleteDataFromDB(lista_de_produtos_auxiliar.get(j).getTitle(), relacao_auxiliar, nivel_auxiliar);
                     }
 
                 }
 
-
-                databaseHelper.deleteDataFromDB(lista_de_produtos.get(i).getTitle(), relacao);
+Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
+                databaseHelper.deleteDataFromDB(lista_de_produtos.get(i).getTitle(), relacao, nivel);
                 lista_de_produtos.remove(i);
 
                 mode.finish();
