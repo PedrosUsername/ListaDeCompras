@@ -107,8 +107,8 @@ Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
 
                     @Override
                     public void onClick(View view) {
-                        lista_de_produtos.get(i).setTitle(mProduto.getText().toString());
-                        databaseHelper.editDataFromDB(oldValue, mProduto.getText().toString(), relacao);
+                        lista_de_produtos.get(i).setTitle(mProduto.getText().toString().replace("'", "´"));
+                        databaseHelper.editDataFromDB(oldValue, mProduto.getText().toString().replace("'", "´"), relacao);
 
                         dialog.dismiss();
                     }

@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class ShowPastaContents extends AppCompatActivity {
         lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( p.getTitle(), nivel );
         final String RELACAO = p.getTitle();
 
+        TextView pastaAtual = findViewById(R.id.textView);
+        pastaAtual.setText( p.getTitle() );
 
         FloatingActionButton fab = findViewById(R.id.fab_pasta);
         ListView products = findViewById(R.id.products_pasta);
@@ -108,7 +111,8 @@ public class ShowPastaContents extends AppCompatActivity {
                         if(( !mProduto.getText().toString().isEmpty() ) && ( !lista_de_produtos_tem(novoItem) )) {
                         lista_de_produtos.add(novoItem);
                         p.getLista().add( novoItem );
-                        databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO, nivel);
+                        novoItem.setTitle( novoItem.getTitle().replace("'", "´") );
+                        databaseHelper.addDataToDB(novoItem.getTitle(), 0, RELACAO, nivel);
                         }else {
                             int duration = Toast.LENGTH_SHORT;
 
@@ -134,8 +138,9 @@ public class ShowPastaContents extends AppCompatActivity {
 
                         if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novaPasta) )) {
                             lista_de_produtos.add(novaPasta);
+                            novaPasta.setTitle( novaPasta.getTitle().replace("'", "´") );
                             p.getLista().add( novaPasta );
-                            databaseHelper.addDataToDB(mProduto.getText().toString(), 1, RELACAO, nivel);
+                            databaseHelper.addDataToDB(novaPasta.getTitle(), 1, RELACAO, nivel);
                         }else{
                             int duration = Toast.LENGTH_SHORT;
 

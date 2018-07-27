@@ -92,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
 
                             if(( !mProduto.getText().toString().isEmpty() ) && ( !lista_de_produtos_tem(novoItem) )) {
                                 lista_de_produtos.add(novoItem);
-                                databaseHelper.addDataToDB(mProduto.getText().toString(), 0, RELACAO, nivel);
+                                novoItem.setTitle( novoItem.getTitle().replace("'", "´") );
+                                databaseHelper.addDataToDB(novoItem.getTitle(), 0, RELACAO, nivel);
                             }else {
                                 int duration = Toast.LENGTH_SHORT;
 
@@ -119,7 +120,8 @@ public class MainActivity extends AppCompatActivity {
 
                             if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novaPasta) )) {
                                 lista_de_produtos.add(novaPasta);
-                                databaseHelper.addDataToDB(mProduto.getText().toString(), 1, RELACAO, nivel);
+                                novaPasta.setTitle( novaPasta.getTitle().replace("'", "´") );
+                                databaseHelper.addDataToDB(novaPasta.getTitle(), 1, RELACAO, nivel);
                             }else{
                                 int duration = Toast.LENGTH_SHORT;
 
