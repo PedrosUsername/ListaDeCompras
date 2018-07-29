@@ -103,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     }
 
-    public void editDataFromDB(String oldValue, String newValue, String relacao){
+    public void editDataFromDB(String oldValue, String newValue, String relacao, int nivel){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -111,8 +111,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         ContentValues valuesRelated = new ContentValues();
         valuesRelated.put(COL4, newValue);
 
-        db.update(TABLE_NAME, values, COL2 + " = '" + oldValue + "' AND " + COL4 + " = '"+ relacao +"'", null);
-        db.update(TABLE_NAME, valuesRelated, COL4 + " = '" + oldValue + "'" , null);
+        db.update(TABLE_NAME, values, COL2 + " = '" + oldValue + "' AND " + COL4 + " = '"+ relacao +"' " + "AND " + COL5 + " = " + nivel, null);
+        nivel++;
+        db.update(TABLE_NAME, valuesRelated, COL4 + " = '" + oldValue + "' " + "AND " + COL5 + " = " + nivel, null);
     }
 
     public void deleteDataFromDB(String s, String relacao, int nivel){

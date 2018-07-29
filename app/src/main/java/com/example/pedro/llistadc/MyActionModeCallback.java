@@ -107,8 +107,23 @@ Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
 
                     @Override
                     public void onClick(View view) {
-                        lista_de_produtos.get(i).setTitle(mProduto.getText().toString().replace("'", "´"));
-                        databaseHelper.editDataFromDB(oldValue, mProduto.getText().toString().replace("'", "´"), relacao);
+                        String novoTitulo = mProduto.getText().toString().replace("'", "´");
+
+                        if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novoTitulo) )) {
+                            lista_de_produtos.get(i).setTitle(novoTitulo);
+                            databaseHelper.editDataFromDB(oldValue, novoTitulo, relacao, nivel);
+                        }else{
+                            int duration = Toast.LENGTH_SHORT;
+
+                            if ( !lista_de_produtos_tem(novoTitulo) ) {
+                                Toast toast = Toast.makeText(context, "O produto deve ter identificação", duration);
+                                toast.show();
+                            }else {
+                                Toast toast = Toast.makeText(context, "O produto "+novoTitulo+" já foi adicionado", duration);
+                                toast.show();
+                            }
+                        }
+
 
                         dialog.dismiss();
                     }
@@ -124,7 +139,7 @@ Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
             break;
 
             default:
-                Toast toast = Toast.makeText(context, "um erro estranho aconteceu", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(context, "Erro estranho...", Toast.LENGTH_SHORT);
                 toast.show();
 
                 mode.finish();
@@ -152,4 +167,17 @@ Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
         mode.setTitle("CheckBox is Checked");
         return false;
     }
+
+    public boolean lista_de_produtos_tem( String s ){
+        int i;
+
+        for(i=0; i<lista_de_produtos.size(); i++){
+            if(lista_de_produtos.get(i).getTitle().equals( s ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

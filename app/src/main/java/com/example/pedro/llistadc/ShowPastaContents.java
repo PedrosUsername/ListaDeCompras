@@ -120,7 +120,7 @@ public class ShowPastaContents extends AppCompatActivity {
                                 Toast toast = Toast.makeText(getApplicationContext(), "Produto sem nome", duration);
                                 toast.show();
                             }else {
-                                Toast toast = Toast.makeText(getApplicationContext(), "Esse produto ja foi adicionado", duration);
+                                Toast toast = Toast.makeText(getApplicationContext(), "O produto "+novoItem.getTitle()+" já foi adicionado", duration);
                                 toast.show();
                             }
                         }
@@ -148,7 +148,7 @@ public class ShowPastaContents extends AppCompatActivity {
                                 Toast toast = Toast.makeText(getApplicationContext(), "Produto sem nome", duration);
                                 toast.show();
                             }else {
-                                Toast toast = Toast.makeText(getApplicationContext(), "Esse produto ja foi adicionado", duration);
+                                Toast toast = Toast.makeText(getApplicationContext(), "O produto "+novaPasta.getTitle()+" já foi adicionado", duration);
                                 toast.show();
                             }
                         }
