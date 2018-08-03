@@ -26,7 +26,9 @@ import java.util.Vector;
 public class MainActivity extends AppCompatActivity {
 
     String RELACAO = "LListaDC";
+    int contadorID;
     int nivel = 0;
+    String path = "0";
     DatabaseHelper databaseHelper;
     ArrayList<Produto> lista_de_produtos;
 
@@ -36,7 +38,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         databaseHelper = new DatabaseHelper(getApplicationContext());
-        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( RELACAO, nivel );
+        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( path );
+
+        if(lista_de_produtos.isEmpty())
+            contadorID = 0;
+        else
+            contadorID = lista_de_produtos.get( lista_de_produtos.size()-1 ).getId() + 1;
 
         final FloatingActionButton fab = findViewById(R.id.fab);
         ListView products = findViewById(R.id.products);
@@ -50,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if(lista_de_produtos.get(i).type == 1) {
                     Intent intent = new Intent(MainActivity.this, ShowPastaContents.class);
+                    Log.d("path atual", path);
+                    Log.d("entrando path", lista_de_produtos.get(i).getPath());
                     intent.putExtra("serial_obj", lista_de_produtos.get(i));
                     startActivity(intent);
                 }
@@ -60,8 +69,10 @@ public class MainActivity extends AppCompatActivity {
         products.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                String itemPath = path + "," + lista_de_produtos.get(i).getId();
+
                 ActionMode mActionMode;
-                MyActionModeCallback callback = new MyActionModeCallback(MainActivity.this, lista_de_produtos, i, RELACAO, nivel);
+                MyActionModeCallback callback = new MyActionModeCallback(MainActivity.this, lista_de_produtos, i, itemPath);
                 mActionMode = startActionMode(callback);
                 mActionMode.setTitle(R.string.menu_context_title);
 
@@ -92,9 +103,12 @@ public class MainActivity extends AppCompatActivity {
                             novoItem.setNivel(nivel);
 
                             if(( !mProduto.getText().toString().isEmpty() ) && ( !lista_de_produtos_tem(novoItem) )) {
+                                novoItem.setId( contadorID );
+                                contadorID++;
+                                novoItem.setPath(path+","+novoItem.getId());
                                 lista_de_produtos.add(novoItem);
                                 novoItem.setTitle( novoItem.getTitle().replace("'", "´") );
-                                databaseHelper.addDataToDB(novoItem.getTitle(), 0, RELACAO, nivel);
+                                databaseHelper.addDataToDB(novoItem.getTitle(), 0, novoItem.getId(), novoItem.getPath());
                             }else {
                                 int duration = Toast.LENGTH_SHORT;
 
@@ -120,9 +134,12 @@ public class MainActivity extends AppCompatActivity {
                             novaPasta.setNivel(nivel);
 
                             if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novaPasta) )) {
+                                novaPasta.setId( contadorID );
+                                contadorID++;
+                                novaPasta.setPath(path+","+novaPasta.getId());
                                 lista_de_produtos.add(novaPasta);
                                 novaPasta.setTitle( novaPasta.getTitle().replace("'", "´") );
-                                databaseHelper.addDataToDB(novaPasta.getTitle(), 1, RELACAO, nivel);
+                                databaseHelper.addDataToDB(novaPasta.getTitle(), 1, novaPasta.getId(), novaPasta.getPath());
                             }else{
                                 int duration = Toast.LENGTH_SHORT;
 

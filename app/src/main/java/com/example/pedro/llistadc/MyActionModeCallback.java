@@ -27,16 +27,14 @@ public class MyActionModeCallback implements ActionMode.Callback {
     private DatabaseHelper databaseHelper;
     private List<Produto> lista_de_produtos;
     private int i;
-    private String relacao;
-    private int nivel;
+    private String path;
 
-    public MyActionModeCallback(Context context, List lista_de_produtos, int i, String relacao, int nivel) {
+    public MyActionModeCallback(Context context, List lista_de_produtos, int i, String path) {
         this.context = context;
         databaseHelper = new DatabaseHelper(context);
         this.lista_de_produtos = lista_de_produtos;
         this.i = i;
-        this.relacao = relacao;
-        this.nivel = nivel;
+        this.path = path;
     }
 
     @Override
@@ -48,10 +46,10 @@ public class MyActionModeCallback implements ActionMode.Callback {
 
             case R.id.item_delete:
 
-                List<Produto> lista_de_produtos_auxiliar;
+/*         List<Produto> lista_de_produtos_auxiliar;
                 String relacao_auxiliar;
                 int nivel_auxiliar;
-                while(!databaseHelper.getAllProdutosFromDBRelatedTo(lista_de_produtos.get(i).getTitle(), nivel+1).isEmpty()) {
+                while(!databaseHelper.getAllProdutosFromDBRelatedTo(lista_de_produtos.get(i).getTitle(), nivel+1, path).isEmpty()) {
                     relacao_auxiliar = this.lista_de_produtos.get(i).getTitle();
                     nivel_auxiliar = this.nivel+1;
                     lista_de_produtos_auxiliar = databaseHelper.getAllProdutosFromDBRelatedTo(relacao_auxiliar, nivel_auxiliar);
@@ -67,12 +65,16 @@ public class MyActionModeCallback implements ActionMode.Callback {
                         }
 Log.d(lista_de_produtos_auxiliar.get(j).getTitle(), relacao_auxiliar + " " + nivel_auxiliar);
                         databaseHelper.deleteDataFromDB(lista_de_produtos_auxiliar.get(j).getTitle(), relacao_auxiliar, nivel_auxiliar);
+
                     }
 
                 }
 
 Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
                 databaseHelper.deleteDataFromDB(lista_de_produtos.get(i).getTitle(), relacao, nivel);
+*/
+                Log.d("path", path);
+                databaseHelper.deleteDataFromDBWithPath( path );
                 lista_de_produtos.remove(i);
 
                 mode.finish();
@@ -111,7 +113,7 @@ Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
 
                         if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novoTitulo) )) {
                             lista_de_produtos.get(i).setTitle(novoTitulo);
-                            databaseHelper.editDataFromDB(oldValue, novoTitulo, relacao, nivel);
+                            databaseHelper.editDataFromDB(novoTitulo, path);
                         }else{
                             int duration = Toast.LENGTH_SHORT;
 
