@@ -59,7 +59,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     public ArrayList<Produto> getAllProdutosFromDBRelatedTo(String path){
         ArrayList<Produto> list = new ArrayList<>();
-        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL7 + " LIKE '" + path + ",_'";
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + COL7 + " GLOB '" + path + ",[0-9]' OR "+ COL7 + " GLOB '" + path + ",[0-9][0-9]' OR "+ COL7 + " GLOB '" + path + ",[0-9][0-9][0-9]'";
         SQLiteDatabase sqLiteDatabase = this.getReadableDatabase();
 
         Cursor c = sqLiteDatabase.rawQuery(selectQuery, null);
