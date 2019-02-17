@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/LListaDC.iml" filepath="$PROJECT_DIR$/LListaDC.iml" />
-      <module fileurl="file://$PROJECT_DIR$/LListaDC2.iml" filepath="$PROJECT_DIR$/LListaDC2.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/github_listadc.iml" filepath="$PROJECT_DIR$/github_listadc.iml" />
     </modules>
   </component>
 </project>

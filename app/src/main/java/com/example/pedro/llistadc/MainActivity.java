@@ -2,6 +2,7 @@ package com.example.pedro.llistadc;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +11,7 @@ import android.view.ActionMode;
 import android.view.ContextMenu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,17 +40,33 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         databaseHelper = new DatabaseHelper(getApplicationContext());
-        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( path );
+        lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo(path);
 
-        if(lista_de_produtos.isEmpty())
+        if (lista_de_produtos.isEmpty())
             contadorID = 0;
         else
-            contadorID = lista_de_produtos.get( lista_de_produtos.size()-1 ).getId() + 1;
+            contadorID = lista_de_produtos.get(lista_de_produtos.size() - 1).getId() + 1;
 
         final FloatingActionButton fab = findViewById(R.id.fab);
         ListView products = findViewById(R.id.products);
 
-        ArrayAdapter<Produto> adapter = new ArrayAdapter<Produto>(this, R.layout.list_view_white_text, R.id.list_content, lista_de_produtos);
+        final ArrayAdapter<Produto> adapter = new ArrayAdapter<Produto>(this, R.layout.list_view_white_text, R.id.list_content, lista_de_produtos){
+            public View getView ( int position, View convertView, ViewGroup parent){
+
+                View view = super.getView(position, convertView, parent);
+                TextView tv = (TextView) view.findViewById(R.id.list_content);
+
+                if (lista_de_produtos.get(position).type == 1) {
+                    tv.setTextColor(getResources().getColor(R.color.piss));
+                    view.setBackgroundColor(getResources().getColor(R.color.customDarkerGreen));
+                } else {
+                    tv.setTextColor(getResources().getColor(R.color.customWhite));
+                    view.setBackgroundColor(getResources().getColor(R.color.customDarkGreen));
+                }
+
+                return view;
+            }
+        };
         products.setAdapter(adapter);
 
         products.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -72,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
                 String itemPath = path + "," + lista_de_produtos.get(i).getId();
 
                 ActionMode mActionMode;
-                MyActionModeCallback callback = new MyActionModeCallback(MainActivity.this, lista_de_produtos, i, itemPath);
+                MyActionModeCallback callback = new MyActionModeCallback(MainActivity.this, lista_de_produtos, i, itemPath, adapter);
                 mActionMode = startActionMode(callback);
                 mActionMode.setTitle(R.string.menu_context_title);
 
@@ -121,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
 
+                            adapter.notifyDataSetChanged();
                             dialog.dismiss();
                         }
                     });
@@ -152,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             }
 
+                            adapter.notifyDataSetChanged();
                             dialog.dismiss();
                         }
                     });

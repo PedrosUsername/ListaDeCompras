@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -28,13 +29,15 @@ public class MyActionModeCallback implements ActionMode.Callback {
     private List<Produto> lista_de_produtos;
     private int i;
     private String path;
+    private ArrayAdapter<Produto> adapter;
 
-    public MyActionModeCallback(Context context, List lista_de_produtos, int i, String path) {
+    public MyActionModeCallback(Context context, List lista_de_produtos, int i, String path, ArrayAdapter<Produto> adapter) {
         this.context = context;
         databaseHelper = new DatabaseHelper(context);
         this.lista_de_produtos = lista_de_produtos;
         this.i = i;
         this.path = path;
+        this.adapter = adapter;
     }
 
     @Override
@@ -76,6 +79,7 @@ Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
                 Log.d("path", path);
                 databaseHelper.deleteDataFromDBWithPath( path );
                 lista_de_produtos.remove(i);
+                adapter.notifyDataSetChanged();
 
                 mode.finish();
             break;
@@ -126,7 +130,7 @@ Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
                             }
                         }
 
-
+                        adapter.notifyDataSetChanged();
                         dialog.dismiss();
                     }
                 });

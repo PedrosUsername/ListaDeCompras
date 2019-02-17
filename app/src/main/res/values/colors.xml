@@ -5,6 +5,7 @@
     <color name="colorAccent">#000000</color>
     <color name="customGreen">#39d131</color>
     <color name="customDarkGreen">#0d3d07</color>
+    <color name="customDarkerGreen">#0B3A06</color>
     <color name="customWhite">#e4e0e0</color>
     <color name="piss">#fff200</color>
 </resources>
