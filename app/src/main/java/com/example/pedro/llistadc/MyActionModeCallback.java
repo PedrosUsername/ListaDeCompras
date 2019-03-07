@@ -157,6 +157,7 @@ Log.d(lista_de_produtos.get(i).getTitle(), relacao + " " + nivel);
     public boolean onCreateActionMode(ActionMode mode, Menu menu) {
         // TODO Auto-generated method stub
         mode.getMenuInflater().inflate(R.menu.context_menu, menu);
+
         return true;
     }
 

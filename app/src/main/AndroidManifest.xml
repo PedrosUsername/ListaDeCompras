@@ -22,7 +22,8 @@
         <activity
             android:name=".ShowPastaContents"
             android:label="@string/title_activity_show_pasta_contents"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
     </application>
 
 </manifest>
