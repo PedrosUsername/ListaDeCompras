@@ -77,35 +77,45 @@ public class MainActivity extends AppCompatActivity {
         };
         products.setAdapter(adapter);
 
-        //huehuehue
+        //suporte a multipla escolha de produtos
         products.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         products.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
 
             LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
             ArrayList<Produto> lista_de_produtos_CAB;
             //o valor do i muda a cada onItemCheckedStateChanged, então aqui guardamos o valor do primeiro i
+
+            MenuItem menuItem;
             int first_i;
 
 
             @Override
             public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
 
-                if(lista_de_produtos_CAB.size() < 1)
-                    first_i = i;
-
+                //incrementa a lista do CAB
                 if(b){
                     lista_de_produtos_CAB.add(lista_de_produtos.get(i));
                 }else{
                     lista_de_produtos_CAB.remove(lista_de_produtos.get(i));
                 }
-/*
-                debug lista_de_produtos_CAB
-                int j;
-                for(j = 0; j < lista_de_produtos_CAB.size(); j++)
-                Log.d("lista de produtos cab", "[" + j + "]: " + lista_de_produtos_CAB.get(j).getPath());
-*/
+                // -------------------------
+
+                if (lista_de_produtos_CAB.size() == 1){
+                    first_i = lista_de_produtos.indexOf(lista_de_produtos_CAB.get(0));
+
+                    this.menuItem.setEnabled(true);
+                    this.menuItem.setVisible(true);
+                }
+
+                if(lista_de_produtos_CAB.size() > 1){
+                    this.menuItem.setEnabled(false);
+                    this.menuItem.setVisible(false);
+                }
+
                 adapter.notifyDataSetChanged();
             }
+
+
 
             @Override
             public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
@@ -120,6 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                this.menuItem = menu.findItem(R.id.item_edit);
 
                 return false;
             }

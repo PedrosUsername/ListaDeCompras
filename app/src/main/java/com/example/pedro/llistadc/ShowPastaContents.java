@@ -10,8 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -57,7 +62,7 @@ public class ShowPastaContents extends AppCompatActivity {
         pastaAtual.setText( p.getTitle() );
 
         FloatingActionButton fab = findViewById(R.id.fab_pasta);
-        ListView products = findViewById(R.id.products_pasta);
+        final ListView products = findViewById(R.id.products_pasta);
 
         final ArrayAdapter<Produto> adapter = new ArrayAdapter<Produto>(this, R.layout.list_view_white_text, R.id.list_content, lista_de_produtos){
             public View getView ( int position, View convertView, ViewGroup parent){
@@ -65,12 +70,21 @@ public class ShowPastaContents extends AppCompatActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView tv = (TextView) view.findViewById(R.id.list_content);
 
-                if (lista_de_produtos.get(position).type == 1) {
+                if ((lista_de_produtos.get(position).type == 1) && (!products.isItemChecked(position))) {
                     tv.setTextColor(getResources().getColor(R.color.piss));
                     view.setBackgroundColor(getResources().getColor(R.color.customDarkerGreen));
-                } else {
+                }
+                else if ((lista_de_produtos.get(position).type == 0) && (!products.isItemChecked(position))) {
                     tv.setTextColor(getResources().getColor(R.color.customWhite));
                     view.setBackgroundColor(getResources().getColor(R.color.customDarkGreen));
+                }
+                else if ((lista_de_produtos.get(position).type == 1) && (products.isItemChecked(position))) {
+                    tv.setTextColor(getResources().getColor(R.color.piss));
+                    view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+                }
+                else if ((lista_de_produtos.get(position).type == 0) && (products.isItemChecked(position))) {
+                    tv.setTextColor(getResources().getColor(R.color.customWhite));
+                    view.setBackgroundColor(getResources().getColor(R.color.colorAccent));
                 }
 
                 return view;
@@ -78,6 +92,159 @@ public class ShowPastaContents extends AppCompatActivity {
         };
         products.setAdapter(adapter);
 
+        //suporte a multipla escolha de produtos
+        products.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        products.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+
+            LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
+            ArrayList<Produto> lista_de_produtos_CAB;
+            //o valor do i muda a cada onItemCheckedStateChanged, então aqui guardamos o valor do primeiro i
+
+            MenuItem menuItem;
+            int first_i;
+
+
+            @Override
+            public void onItemCheckedStateChanged(ActionMode actionMode, int i, long l, boolean b) {
+
+                //incrementa a lista do CAB
+                if(b){
+                    lista_de_produtos_CAB.add(lista_de_produtos.get(i));
+                }else{
+                    lista_de_produtos_CAB.remove(lista_de_produtos.get(i));
+                }
+                // -------------------------
+
+                if (lista_de_produtos_CAB.size() == 1){
+                    first_i = lista_de_produtos.indexOf(lista_de_produtos_CAB.get(0));
+
+                    this.menuItem.setEnabled(true);
+                    this.menuItem.setVisible(true);
+                }
+
+                if(lista_de_produtos_CAB.size() > 1){
+                    this.menuItem.setEnabled(false);
+                    this.menuItem.setVisible(false);
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+
+
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                // Inflate the menu for the CAB
+                lista_de_produtos_CAB = new ArrayList<>();
+
+                MenuInflater inflater = getMenuInflater();
+                inflater.inflate(R.menu.context_menu, menu);
+
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                this.menuItem = menu.findItem(R.id.item_edit);
+
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+
+                switch (menuItem.getItemId()) {
+
+                    case R.id.item_delete:
+
+                        while(lista_de_produtos_CAB.size() > 0) {
+                            Log.d("lpcab size: ", "" + lista_de_produtos_CAB.size());
+                            Log.d("deletando produto: ", lista_de_produtos_CAB.get(0).getTitle());
+                            databaseHelper.deleteDataFromDBWithPath(lista_de_produtos_CAB.get(0).getPath());
+                            lista_de_produtos.remove(lista_de_produtos_CAB.get(0));
+                            lista_de_produtos_CAB.remove(0);
+                        }
+
+                        adapter.notifyDataSetChanged();
+                        actionMode.finish();
+                        break;
+
+
+                    case R.id.item_edit:
+
+                        AlertDialog.Builder mBuilder = new AlertDialog.Builder(ShowPastaContents.this);
+                        View mView = inflater.inflate(R.layout.dialog_input_edit, null);
+                        final EditText mProduto = mView.findViewById(R.id.produto_input);
+                        final String oldValue = lista_de_produtos_CAB.get(0).toString();
+                        mProduto.setText(oldValue);
+
+                        final Button mCancelar = mView.findViewById(R.id.cancelar);
+                        final Button mConcluir = mView.findViewById(R.id.concluir);
+
+                        mBuilder.setView(mView);
+                        final AlertDialog dialog = mBuilder.create();
+
+                        mCancelar.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View view) {
+
+                                dialog.dismiss();
+                            }
+                        });
+
+
+                        mConcluir.setOnClickListener(new View.OnClickListener() {
+
+                            @Override
+                            public void onClick(View view) {
+                                String novoTitulo = mProduto.getText().toString().replace("'", "´");
+
+                                if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novoTitulo) )) {
+                                    lista_de_produtos.get(first_i).setTitle(novoTitulo);
+                                    databaseHelper.editDataFromDB(novoTitulo, lista_de_produtos_CAB.get(0).getPath());
+                                }else{
+                                    int duration = Toast.LENGTH_SHORT;
+
+                                    if ( !lista_de_produtos_tem(novoTitulo) ) {
+                                        Toast toast = Toast.makeText(getApplicationContext(), "O produto deve ter identificação", duration);
+                                        toast.show();
+                                    }else {
+                                        Toast toast = Toast.makeText(getApplicationContext(), "O produto "+novoTitulo+" já foi adicionado", duration);
+                                        toast.show();
+                                    }
+                                }
+
+                                adapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
+                        });
+
+
+
+
+                        dialog.show();
+
+
+                        actionMode.finish();
+                        break;
+
+                    default:
+                        Toast toast = Toast.makeText(getApplicationContext(), "Erro estranho...", Toast.LENGTH_SHORT);
+                        toast.show();
+
+                        finish();
+                }
+
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+
+            }
+        });
+        // **********************************************************************
 
         products.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -96,7 +263,7 @@ public class ShowPastaContents extends AppCompatActivity {
 
 
 
-        products.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+/*        products.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String itemPath = path + "," + lista_de_produtos.get(i).getId();
@@ -109,7 +276,7 @@ public class ShowPastaContents extends AppCompatActivity {
                 return true;
             }
         });
-
+*/
 
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -203,6 +370,17 @@ public class ShowPastaContents extends AppCompatActivity {
 
         for(i=0; i<lista_de_produtos.size(); i++){
             if(lista_de_produtos.get(i).getTitle().equals( p.getTitle() ) ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    public boolean lista_de_produtos_tem( String s ){
+        int i;
+
+        for(i=0; i<lista_de_produtos.size(); i++){
+            if(lista_de_produtos.get(i).getTitle().equals( s ) ) {
                 return true;
             }
         }
