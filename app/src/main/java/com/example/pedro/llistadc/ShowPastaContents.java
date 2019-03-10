@@ -3,11 +3,8 @@ package com.example.pedro.llistadc;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -26,10 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 public class ShowPastaContents extends AppCompatActivity {
 
@@ -100,7 +93,7 @@ public class ShowPastaContents extends AppCompatActivity {
             ArrayList<Produto> lista_de_produtos_CAB;
             //o valor do i muda a cada onItemCheckedStateChanged, então aqui guardamos o valor do primeiro i
 
-            MenuItem menuItem;
+            MenuItem menuItem, menuItem2;
             int first_i;
 
 
@@ -120,11 +113,17 @@ public class ShowPastaContents extends AppCompatActivity {
 
                     this.menuItem.setEnabled(true);
                     this.menuItem.setVisible(true);
+
+                    this.menuItem2.setEnabled(false);
+                    this.menuItem2.setVisible(false);
                 }
 
                 if(lista_de_produtos_CAB.size() > 1){
                     this.menuItem.setEnabled(false);
                     this.menuItem.setVisible(false);
+
+                    this.menuItem2.setEnabled(true);
+                    this.menuItem2.setVisible(true);
                 }
 
                 adapter.notifyDataSetChanged();
@@ -146,6 +145,7 @@ public class ShowPastaContents extends AppCompatActivity {
             @Override
             public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
                 this.menuItem = menu.findItem(R.id.item_edit);
+                this.menuItem2 = menu.findItem(R.id.item_compac);
 
                 return false;
             }
@@ -158,7 +158,6 @@ public class ShowPastaContents extends AppCompatActivity {
                     case R.id.item_delete:
 
                         while(lista_de_produtos_CAB.size() > 0) {
-                            Log.d("lpcab size: ", "" + lista_de_produtos_CAB.size());
                             Log.d("deletando produto: ", lista_de_produtos_CAB.get(0).getTitle());
                             databaseHelper.deleteDataFromDBWithPath(lista_de_produtos_CAB.get(0).getPath());
                             lista_de_produtos.remove(lista_de_produtos_CAB.get(0));
@@ -227,7 +226,32 @@ public class ShowPastaContents extends AppCompatActivity {
 
 
                         actionMode.finish();
-                        break;
+                    break;
+
+                    case R.id.item_compac:
+
+                        Pasta novaPasta = new Pasta("- Nova Pasta -");
+
+                        novaPasta.setId( contadorID );
+                        contadorID++;
+                        novaPasta.setPath(path+","+novaPasta.getId());
+                        lista_de_produtos.add(novaPasta);
+                        novaPasta.setTitle( novaPasta.getTitle().replace("'", "´") );
+                        databaseHelper.addDataToDB(novaPasta.getTitle(), 1, novaPasta.getId(), novaPasta.getPath());
+
+                        while(lista_de_produtos_CAB.size() > 0) {
+                            Log.d("????????????????", "antes -> "+lista_de_produtos_CAB.get(0).getPath());
+                            databaseHelper.editPathFromDB(novaPasta.getPath() + ","+ lista_de_produtos_CAB.get(0).getId() , lista_de_produtos_CAB.get(0).getPath());
+                            Log.d("????????????????", "depoix -> "+lista_de_produtos_CAB.get(0).getPath());
+                            lista_de_produtos.remove(lista_de_produtos_CAB.get(0));
+                            lista_de_produtos_CAB.remove(0);
+
+                        }
+
+                        adapter.notifyDataSetChanged();
+                        actionMode.finish();
+                    break;
+
 
                     default:
                         Toast toast = Toast.makeText(getApplicationContext(), "Erro estranho...", Toast.LENGTH_SHORT);
@@ -305,7 +329,6 @@ public class ShowPastaContents extends AppCompatActivity {
                         contadorID++;
                         novoItem.setPath( path+","+novoItem.getId() );
                         lista_de_produtos.add(novoItem);
-                        p.getLista().add( novoItem );
                         novoItem.setTitle( novoItem.getTitle().replace("'", "´") );
                         databaseHelper.addDataToDB(novoItem.getTitle(), 0, novoItem.getId(), novoItem.getPath());
                         }else {
@@ -338,7 +361,6 @@ public class ShowPastaContents extends AppCompatActivity {
                             novaPasta.setPath(path+","+novaPasta.getId());
                             lista_de_produtos.add(novaPasta);
                             novaPasta.setTitle( novaPasta.getTitle().replace("'", "´") );
-                            p.getLista().add( novaPasta );
                             databaseHelper.addDataToDB(novaPasta.getTitle(), 1, novaPasta.getId(), novaPasta.getPath());
                         }else{
                             int duration = Toast.LENGTH_SHORT;

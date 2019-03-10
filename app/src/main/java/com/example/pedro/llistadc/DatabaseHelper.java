@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.view.inputmethod.InputConnectionWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,6 +117,16 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         values.put(COL2, newValue);
 
         db.update(TABLE_NAME, values, COL7 + " = '" + path + "'", null);
+    }
+
+    public void editPathFromDB(String newValue, String path){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "UPDATE " + TABLE_NAME + " SET " +COL7+ " = REPLACE(" +COL7+ ", '"+path+"', '" +newValue+ "') WHERE " +COL7+ " LIKE ('"+ path +"%')";
+
+        ContentValues values = new ContentValues();
+        values.put(COL7, newValue);
+
+        db.execSQL(selectQuery);
     }
 
 

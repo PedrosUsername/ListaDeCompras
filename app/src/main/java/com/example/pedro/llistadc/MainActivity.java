@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<Produto> lista_de_produtos_CAB;
             //o valor do i muda a cada onItemCheckedStateChanged, então aqui guardamos o valor do primeiro i
 
-            MenuItem menuItem;
+            MenuItem menuItem, menuItem2;
             int first_i;
 
 
@@ -105,11 +105,17 @@ public class MainActivity extends AppCompatActivity {
 
                     this.menuItem.setEnabled(true);
                     this.menuItem.setVisible(true);
+
+                    this.menuItem2.setEnabled(false);
+                    this.menuItem2.setVisible(false);
                 }
 
                 if(lista_de_produtos_CAB.size() > 1){
                     this.menuItem.setEnabled(false);
                     this.menuItem.setVisible(false);
+
+                    this.menuItem2.setEnabled(true);
+                    this.menuItem2.setVisible(true);
                 }
 
                 adapter.notifyDataSetChanged();
@@ -131,6 +137,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
                 this.menuItem = menu.findItem(R.id.item_edit);
+                this.menuItem2 = menu.findItem(R.id.item_compac);
 
                 return false;
             }
@@ -143,7 +150,6 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.item_delete:
 
                         while(lista_de_produtos_CAB.size() > 0) {
-                            Log.d("lpcab size: ", "" + lista_de_produtos_CAB.size());
                             Log.d("deletando produto: ", lista_de_produtos_CAB.get(0).getTitle());
                             databaseHelper.deleteDataFromDBWithPath(lista_de_produtos_CAB.get(0).getPath());
                             lista_de_produtos.remove(lista_de_produtos_CAB.get(0));
@@ -152,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
 
                         adapter.notifyDataSetChanged();
                         actionMode.finish();
-                        break;
+                    break;
 
 
                     case R.id.item_edit:
@@ -212,7 +218,32 @@ public class MainActivity extends AppCompatActivity {
 
 
                         actionMode.finish();
+                    break;
+
+                    case R.id.item_compac:
+
+                        Pasta novaPasta = new Pasta("- Nova Pasta -");
+
+                        novaPasta.setId( contadorID );
+                        contadorID++;
+                        novaPasta.setPath(path+","+novaPasta.getId());
+                        lista_de_produtos.add(novaPasta);
+                        novaPasta.setTitle( novaPasta.getTitle().replace("'", "´") );
+                        databaseHelper.addDataToDB(novaPasta.getTitle(), 1, novaPasta.getId(), novaPasta.getPath());
+
+                        while(lista_de_produtos_CAB.size() > 0) {
+                            Log.d("????????????????", "antes -> "+lista_de_produtos_CAB.get(0).getPath());
+                            databaseHelper.editPathFromDB(novaPasta.getPath() + ","+ lista_de_produtos_CAB.get(0).getId() , lista_de_produtos_CAB.get(0).getPath());
+                            Log.d("????????????????", "depoix -> "+lista_de_produtos_CAB.get(0).getPath());
+                            lista_de_produtos.remove(lista_de_produtos_CAB.get(0));
+                            lista_de_produtos_CAB.remove(0);
+
+                        }
+
+                        adapter.notifyDataSetChanged();
+                        actionMode.finish();
                         break;
+//Desuraba
 
                     default:
                         Toast toast = Toast.makeText(getApplicationContext(), "Erro estranho...", Toast.LENGTH_SHORT);
