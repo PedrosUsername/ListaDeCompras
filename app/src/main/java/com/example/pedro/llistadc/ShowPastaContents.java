@@ -45,11 +45,20 @@ public class ShowPastaContents extends AppCompatActivity {
         path = p.getPath();
         lista_de_produtos = databaseHelper.getAllProdutosFromDBRelatedTo( path );
 
-        if(lista_de_produtos.isEmpty())
+        // pRocura um bom valor para setar o contadorID
+        if (lista_de_produtos.isEmpty())
             contadorID = 0;
-        else
-            contadorID = lista_de_produtos.get( lista_de_produtos.size()-1 ).getId() + 1;
+        else {
 
+            int z;
+            int maxID = 0;
+            for(z = 0; z < lista_de_produtos.size(); z++){
+                if(lista_de_produtos.get(z).getId() > maxID)
+                    maxID = lista_de_produtos.get(z).getId();
+            }
+            contadorID = maxID + 1;
+
+        }
 
         TextView pastaAtual = findViewById(R.id.textView);
         pastaAtual.setText( p.getTitle() );
@@ -63,13 +72,17 @@ public class ShowPastaContents extends AppCompatActivity {
                 View view = super.getView(position, convertView, parent);
                 TextView tv = (TextView) view.findViewById(R.id.list_content);
 
+                if(position%2 == 0)
+                    view.setBackgroundColor(getResources().getColor(R.color.customDarkerGreen));
+                else
+                    view.setBackgroundColor(getResources().getColor(R.color.customDarkGreen));
+
+
                 if ((lista_de_produtos.get(position).type == 1) && (!products.isItemChecked(position))) {
                     tv.setTextColor(getResources().getColor(R.color.piss));
-                    view.setBackgroundColor(getResources().getColor(R.color.customDarkerGreen));
                 }
                 else if ((lista_de_produtos.get(position).type == 0) && (!products.isItemChecked(position))) {
                     tv.setTextColor(getResources().getColor(R.color.customWhite));
-                    view.setBackgroundColor(getResources().getColor(R.color.customDarkGreen));
                 }
                 else if ((lista_de_produtos.get(position).type == 1) && (products.isItemChecked(position))) {
                     tv.setTextColor(getResources().getColor(R.color.piss));
@@ -93,7 +106,7 @@ public class ShowPastaContents extends AppCompatActivity {
             ArrayList<Produto> lista_de_produtos_CAB;
             //o valor do i muda a cada onItemCheckedStateChanged, então aqui guardamos o valor do primeiro i
 
-            MenuItem menuItem, menuItem2;
+            MenuItem menuItem, menuItem2, menuItem3;
             int first_i;
 
 
@@ -114,16 +127,25 @@ public class ShowPastaContents extends AppCompatActivity {
                     this.menuItem.setEnabled(true);
                     this.menuItem.setVisible(true);
 
-                    this.menuItem2.setEnabled(false);
-                    this.menuItem2.setVisible(false);
+                }
+
+                if (lista_de_produtos_CAB.size() == 2){
+
+                    // ativa icone switch
+                    this.menuItem3.setEnabled(true);
+                    this.menuItem3.setVisible(true);
+
+                } else {
+
+                    // desativa icone switch
+                    this.menuItem3.setEnabled(false);
+                    this.menuItem3.setVisible(false);
                 }
 
                 if(lista_de_produtos_CAB.size() > 1){
                     this.menuItem.setEnabled(false);
                     this.menuItem.setVisible(false);
 
-                    this.menuItem2.setEnabled(true);
-                    this.menuItem2.setVisible(true);
                 }
 
                 adapter.notifyDataSetChanged();
@@ -146,6 +168,7 @@ public class ShowPastaContents extends AppCompatActivity {
             public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
                 this.menuItem = menu.findItem(R.id.item_edit);
                 this.menuItem2 = menu.findItem(R.id.item_compac);
+                this.menuItem3 = menu.findItem(R.id.item_switch);
 
                 return false;
             }
@@ -162,6 +185,21 @@ public class ShowPastaContents extends AppCompatActivity {
                             databaseHelper.deleteDataFromDBWithPath(lista_de_produtos_CAB.get(0).getPath());
                             lista_de_produtos.remove(lista_de_produtos_CAB.get(0));
                             lista_de_produtos_CAB.remove(0);
+                        }
+
+                        // pRocura um bom valor para setar o contadorID
+                        if (lista_de_produtos.isEmpty())
+                            contadorID = 0;
+                        else {
+
+                            int i;
+                            int maxID = 0;
+                            for(i = 0; i < lista_de_produtos.size(); i++){
+                                if(lista_de_produtos.get(i).getId() > maxID)
+                                    maxID = lista_de_produtos.get(i).getId();
+                            }
+                            contadorID = maxID + 1;
+
                         }
 
                         adapter.notifyDataSetChanged();
@@ -201,7 +239,7 @@ public class ShowPastaContents extends AppCompatActivity {
 
                                 if( !mProduto.getText().toString().isEmpty() && ( !lista_de_produtos_tem(novoTitulo) )) {
                                     lista_de_produtos.get(first_i).setTitle(novoTitulo);
-                                    databaseHelper.editDataFromDB(novoTitulo, lista_de_produtos_CAB.get(0).getPath());
+                                    databaseHelper.editDataFromDBTitle(novoTitulo, lista_de_produtos_CAB.get(0).getPath());
                                 }else{
                                     int duration = Toast.LENGTH_SHORT;
 
@@ -237,20 +275,61 @@ public class ShowPastaContents extends AppCompatActivity {
                         novaPasta.setPath(path+","+novaPasta.getId());
                         lista_de_produtos.add(novaPasta);
                         novaPasta.setTitle( novaPasta.getTitle().replace("'", "´") );
-                        databaseHelper.addDataToDB(novaPasta.getTitle(), 1, novaPasta.getId(), novaPasta.getPath());
 
                         while(lista_de_produtos_CAB.size() > 0) {
-                            Log.d("????????????????", "antes -> "+lista_de_produtos_CAB.get(0).getPath());
+
                             databaseHelper.editPathFromDB(novaPasta.getPath() + ","+ lista_de_produtos_CAB.get(0).getId() , lista_de_produtos_CAB.get(0).getPath());
-                            Log.d("????????????????", "depoix -> "+lista_de_produtos_CAB.get(0).getPath());
                             lista_de_produtos.remove(lista_de_produtos_CAB.get(0));
                             lista_de_produtos_CAB.remove(0);
+/*
+                            // Debug
+                            ArrayList<Produto> aux = databaseHelper.getAllProdutosFromDBRelatedTo(novaPasta.getPath());
+                            while( aux.size() > 0){
+                                Log.d("!!!!!!!!!+", "title: "+ aux.get(0).getTitle());
+                                Log.d("!!!!!!!!!-", "path: "+ aux.get(0).getPath());
 
+                                aux.remove(0);
+                            }
+*/
                         }
+
+                        databaseHelper.addDataToDB(novaPasta.getTitle(), 1, novaPasta.getId(), novaPasta.getPath());
 
                         adapter.notifyDataSetChanged();
                         actionMode.finish();
                     break;
+
+                    case R.id.item_switch:
+
+                        Produto p0, p1;
+
+                        p0 = lista_de_produtos_CAB.get(0);
+                        p1 = lista_de_produtos_CAB.get(1);
+
+                        // troca o conteudo dos produtos
+                        databaseHelper.editPathFromDBSimple("x" , p0.getPath());
+                        databaseHelper.editPathFromDBSimple(p0.getPath() , p1.getPath());
+                        databaseHelper.editPathFromDBSimple(p1.getPath() , "x");
+
+                        //troca o titulo dos produtos
+                        databaseHelper.editDataFromDBTitle(p0.getTitle() , p0.getPath());
+                        databaseHelper.editDataFromDBTitle(p1.getTitle() , p1.getPath());
+
+                        //troca o ID dos produtos
+                        databaseHelper.editDataFromDBID(p0.getId(), p0.getPath());
+                        databaseHelper.editDataFromDBID(p1.getId(), p1.getPath());
+
+                        //troca os tipos
+                        databaseHelper.editDataFromDBType(p0.type, p0.getPath());
+                        databaseHelper.editDataFromDBType(p1.type, p1.getPath());
+
+
+                        adapter.clear();
+                        adapter.addAll(databaseHelper.getAllProdutosFromDBRelatedTo(path));
+                        adapter.notifyDataSetChanged();
+
+                        actionMode.finish();
+                        break;
 
 
                     default:
@@ -284,24 +363,6 @@ public class ShowPastaContents extends AppCompatActivity {
 
             }
         });
-
-
-
-/*        products.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String itemPath = path + "," + lista_de_produtos.get(i).getId();
-
-                ActionMode mActionMode;
-                MyActionModeCallback callback = new MyActionModeCallback(ShowPastaContents.this, lista_de_produtos, i, itemPath, adapter);
-                mActionMode = startActionMode(callback);
-                mActionMode.setTitle(R.string.menu_context_title);
-
-                return true;
-            }
-        });
-*/
-
 
         fab.setOnClickListener(new View.OnClickListener() {
 
@@ -378,7 +439,6 @@ public class ShowPastaContents extends AppCompatActivity {
                         dialog.dismiss();
                     }
                 });
-
 
 
 

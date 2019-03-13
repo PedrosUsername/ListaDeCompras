@@ -4,20 +4,28 @@
     <item
         android:id="@+id/item_compac"
         android:icon="@android:drawable/ic_menu_directions"
-        android:title="Edit"
+        android:title="Compac"
         android:titleCondensed="Compac"
-        app:showAsAction="ifRoom|withText"></item>
+        app:showAsAction="ifRoom|withText">
+    </item>
+    <item
+        android:id="@+id/item_switch"
+        android:icon="@android:drawable/ic_menu_revert"
+        android:title="Trocar"
+        android:titleCondensed="Compac"
+        app:showAsAction="ifRoom|withText">
+    </item>
     <item
         android:id="@+id/item_edit"
         android:icon="@android:drawable/ic_menu_edit"
-        android:title="Edit"
+        android:title="Editar"
         android:titleCondensed="Edit"
         app:showAsAction="ifRoom|withText">
     </item>
     <item
         android:id="@+id/item_delete"
         android:icon="@android:drawable/ic_menu_delete"
-        android:title="Delete"
+        android:title="Deletar"
         android:titleCondensed="Delete"
         app:showAsAction="ifRoom|withText">
     </item>

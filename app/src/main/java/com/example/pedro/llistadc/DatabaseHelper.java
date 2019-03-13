@@ -22,8 +22,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String COL1 = "ID";
     private static final String COL2 = "titulo";
     private static final String COL3 = "tipo";
-    private static final String COL4 = "relacao";
-    private static final String COL5 = "nivel";
     private static final String COL6 = "produtoId";
     private static final String COL7 = "path";
     //*****************
@@ -47,7 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT, " + COL3 + " INTEGER, " + COL4 + " TEXT, " + COL5 + " INTEGER, " + COL6 + " INTEGER, " + COL7 + " TEXT)";
+        String createTable = "CREATE TABLE " + TABLE_NAME + " (" + COL1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COL2 + " TEXT, " + COL3 + " INTEGER, " + COL6 + " INTEGER, " + COL7 + " TEXT)";
 
         sqLiteDatabase.execSQL(createTable);
     }
@@ -110,7 +108,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     }
 
-    public void editDataFromDB(String newValue, String path){
+    public void editDataFromDBTitle(String newValue, String path){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -119,9 +117,36 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.update(TABLE_NAME, values, COL7 + " = '" + path + "'", null);
     }
 
+    public void editDataFromDBID(int newValue, String path){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL6, newValue);
+
+        db.update(TABLE_NAME, values, COL7 + " = '" + path + "'", null);
+    }
+
+    public void editDataFromDBType(int newValue, String path){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(COL3, newValue);
+
+        db.update(TABLE_NAME, values, COL7 + " = '" + path + "'", null);
+    }
+
     public void editPathFromDB(String newValue, String path){
         SQLiteDatabase db = this.getWritableDatabase();
-        String selectQuery = "UPDATE " + TABLE_NAME + " SET " +COL7+ " = REPLACE(" +COL7+ ", '"+path+"', '" +newValue+ "') WHERE " +COL7+ " LIKE ('"+ path +"%')";
+        String selectQuery = "UPDATE " + TABLE_NAME + " SET " +COL7+ " = REPLACE(" +COL7+ ", '"+path+"', '" +newValue+ "') WHERE " +COL7+ " LIKE ('"+ path +",%') OR "+COL7+" = '"+path+"'";
+
+        ContentValues values = new ContentValues();
+        values.put(COL7, newValue);
+
+        db.execSQL(selectQuery);
+    }
+    public void editPathFromDBSimple(String newValue, String path){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "UPDATE " + TABLE_NAME + " SET " +COL7+ " = REPLACE(" +COL7+ ", '"+path+"', '" +newValue+ "') WHERE " +COL7+" = '"+path+"'";
 
         ContentValues values = new ContentValues();
         values.put(COL7, newValue);
@@ -130,8 +155,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     }
 
 
+
     public void deleteDataFromDBWithPath(String path){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_NAME, COL7 + " LIKE '" + path + "%'", null);
+        db.delete(TABLE_NAME, COL7 + " LIKE ('"+ path +",%') OR "+COL7+" = '"+path+"'", null);
     }
 }

@@ -21,7 +21,7 @@
             android:textColor="@color/customWhite"
             android:fontFamily="monospace"
             android:textSize="25sp"
-            android:layout_margin="15sp"
+            android:layout_margin="3sp"
             android:background="@color/customDarkGreen"
 
             android:layout_width="match_parent"

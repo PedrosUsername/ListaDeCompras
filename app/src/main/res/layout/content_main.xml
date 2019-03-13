@@ -15,25 +15,27 @@
         android:layout_height="wrap_content">
 
         <TextView
-            android:paddingTop="10sp"
-            android:paddingBottom="10sp"
-            android:paddingLeft="15sp"
-            android:textColor="@color/customWhite"
-            android:fontFamily="monospace"
-            android:textSize="25sp"
-            android:layout_margin="15sp"
-            android:background="@color/customDarkGreen"
-
+            android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="3sp"
+            android:layout_marginEnd="15sp"
+            android:layout_marginRight="15sp"
+            android:background="@color/customDarkGreen"
+            android:fontFamily="monospace"
+
+            android:paddingLeft="15sp"
+            android:paddingTop="10sp"
+            android:paddingBottom="10sp"
             android:text="@string/app_name"
+            android:textColor="@color/customWhite"
+            android:textSize="25sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            android:id="@+id/textView" />
+            app:layout_constraintVertical_bias="0.0" />
 
         <LinearLayout
             android:background="@color/customDarkGreen"

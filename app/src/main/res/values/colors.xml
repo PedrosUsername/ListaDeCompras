@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303f9f</color>
-    <color name="colorAccent">#000000</color>
+
+    <color name="colorAccent">#9C252525</color>
+
     <color name="customGreen">#39d131</color>
     <color name="customDarkGreen">#0d3d07</color>
     <color name="customDarkerGreen">#0B3A06</color>
     <color name="customWhite">#e4e0e0</color>
-    <color name="piss">#fff200</color>
+    <color name="piss">#FFEB30</color>
+
+    <color name="customGreen1">#6374E0</color>
+    <color name="customDarkGreen1">#BD6AB0</color>
+    <color name="curtomDarkerGreen1">#FC89CC</color>
+    <color name="curtomWhite1">#000000</color>
+    <color name="piss1">#6D0000</color>
 </resources>
