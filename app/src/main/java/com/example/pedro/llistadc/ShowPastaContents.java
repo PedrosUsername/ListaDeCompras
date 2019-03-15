@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -220,6 +221,8 @@ public class ShowPastaContents extends AppCompatActivity {
 
                         mBuilder.setView(mView);
                         final AlertDialog dialog = mBuilder.create();
+                        //auto ativa teclado
+                        dialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
                         mCancelar.setOnClickListener(new View.OnClickListener() {
 
@@ -378,6 +381,8 @@ public class ShowPastaContents extends AppCompatActivity {
 
                 mBuilder.setView(mView);
                 final AlertDialog dialog = mBuilder.create();
+                //auto ativa teclado
+                dialog.getWindow().setSoftInputMode (WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
 
                 mNovoItem.setOnClickListener(new View.OnClickListener() {
 
