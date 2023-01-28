@@ -5,7 +5,7 @@ criar listas de texto recursivas.
 
 Com isso você pode criar, por exemplo, uma lista com os nomes de seus países favoritos
 e para cada país, você pode criar uma lista com os nomes dos respectivos estados, e
-para cada estado, uma lista com os nomes das respectivas cidades, ...
+para cada estado, uma lista com os nomes das respectivas cidades, etc...
 
 O app começou como uma simples lista de compras que fiz para minha mãe, mas a medida que
 fomos usando o app acabamos sentindo a necessidade de ampliar o projeto.
